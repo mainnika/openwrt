@@ -1,0 +1,165 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include "mt7621.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
+
+/ {
+	compatible = "arcadyan,wifi-versterker", "mediatek,mt7621-soc";
+	model = "Arcadyan WiFi Versterker";
+
+	chosen {
+		bootargs = "console=ttyS0,57600 ubi.mtd=ubiconcat0 root=/dev/ubiblock0_0";
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+		};
+	};
+};
+
+&spi0 {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+
+		reg = <0>;
+		spi-max-frequency = <10000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "ALL";
+				reg = <0x0 0x2000000>;
+				read-only;
+			};
+
+			partition@1 {
+				label = "Bootloader";
+				reg = <0x0 0x30000>;
+				read-only;
+			};
+
+			partition@30000 {
+				label = "Config";
+				reg = <0x30000 0x10000>;
+			};
+
+			factory: partition@40000 {
+				label = "Factory";
+				reg = <0x40000 0x10000>;
+				read-only;
+
+				macaddr_factory_fff0: macaddr@fff0 {
+					reg = <0xfff0 0x6>;
+				};
+				// todo:
+				// macaddr_factory_fff6: macaddr@fff6 {
+				// 	reg = <0xfff6 0x6>;
+				// };
+			};
+
+			partition@50000 {
+				label = "firmware";
+				reg = <0x50000 0x1F60000>;
+
+				compatible = "fixed-partitions";
+				#address-cells = <1>;
+				#size-cells = <1>;
+
+				partition@0 {
+					label = "kernel";
+					reg = <0x0 0x440000>;
+				};
+
+				ubiconcat0: partition@440000 {
+					label = "ubiconcat0";
+					reg = <0x440000 0x1B20000>;
+				};
+			};
+
+			partition@1fb0000 {
+				label = "glbcfg";
+				reg = <0x1fb0000 0x10000>;
+				read-only;
+			};
+
+			partition@1fc0000 {
+				label = "board_data";
+				reg = <0x1fc0000 0x10000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&xhci {
+	status = "disabled";
+};
+
+&pcie {
+	status = "okay";
+};
+
+&pcie0 {
+	wifi@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
+		mediatek,mtd-eeprom = <&factory 0x0>;
+	};
+};
+
+&pcie1 {
+	wifi@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
+		mediatek,mtd-eeprom = <&factory 0x8000>;
+	};
+};
+
+&gmac0 {
+	nvmem-cells = <&macaddr_factory_fff0>;
+	nvmem-cell-names = "mac-address";
+};
+
+&switch0 {
+	ports {
+		port@1 {
+			status = "okay";
+			label = "swp1";
+		};
+	};
+};
+
+&gmac1 {
+	status = "okay";
+	label = "swp0";
+	phy-handle = <&ethphy0>;
+
+	nvmem-cells = <&macaddr_factory_fff0>;
+	nvmem-cell-names = "mac-address";
+};
+
+&mdio {
+	ethphy0: ethernet-phy@0 {
+		reg = <0>;
+	};
+};
+
+&state_default {
+	gpio {
+		groups = "i2c", "jtag";
+		function = "gpio";
+	};
+};

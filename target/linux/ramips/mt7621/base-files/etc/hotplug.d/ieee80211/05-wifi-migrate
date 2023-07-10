@@ -53,8 +53,10 @@ WIRELESS_CHANGED=false
 
 case "$(board_name)" in
 arcadyan,we420223-99|\
+arcadyan,wifi-versterker|\
 beeline,smartbox-flash|\
 mts,wg430223)
+# todo:
 	migrate_radio '1e140000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0' '1e140000.pcie/pci0000:00/0000:00:01.0/0000:01:00.0'
 	migrate_radio '1e140000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0+1' '1e140000.pcie/pci0000:00/0000:00:01.0/0000:01:00.0+1'
 	;;

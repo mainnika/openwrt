@@ -8,7 +8,8 @@ ramips_setup_interfaces()
 	local board="$1"
 
 	case $board in
-	arcadyan,we420223-99)
+	arcadyan,we420223-99|\
+	arcadyan,wifi-versterker)
 		ucidef_set_interface_lan "swp0 swp1"
 		;;
 	ampedwireless,ally-00x19k|\
@@ -166,7 +167,8 @@ ramips_setup_macs()
 		wan_mac=$(mtd_get_mac_ascii hwconfig HW.WAN.MAC.Address)
 		label_mac=$lan_mac
 		;;
-	arcadyan,we420223-99)
+	arcadyan,we420223-99|\
+	arcadyan,wifi-versterker)
 		label_mac=$(mtd_get_mac_ascii board_data mac)
 		lan_mac=$label_mac
 		ucidef_set_network_device_mac eth0 $(macaddr_add "$label_mac" 3)
