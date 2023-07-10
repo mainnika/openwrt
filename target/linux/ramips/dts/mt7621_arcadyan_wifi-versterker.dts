@@ -11,7 +11,7 @@
 	model = "Arcadyan WiFi Versterker";
 
 	chosen {
-		bootargs = "console=ttyS0,57600 ubi.mtd=ubiconcat0 root=/dev/ubiblock0_0";
+		bootargs = "console=ttyS0,57600 ubi.mtd=ubi root=/dev/ubiblock0_0";
 	};
 
 	keys {
@@ -40,34 +40,33 @@
 			#size-cells = <1>;
 
 			partition@0 {
-				label = "ALL";
+				label = "all";
 				reg = <0x0 0x2000000>;
 				read-only;
 			};
 
 			partition@1 {
-				label = "Bootloader";
+				label = "bootloader";
 				reg = <0x0 0x30000>;
 				read-only;
 			};
 
 			partition@30000 {
-				label = "Config";
+				label = "config";
 				reg = <0x30000 0x10000>;
 			};
 
 			factory: partition@40000 {
-				label = "Factory";
+				label = "factory";
 				reg = <0x40000 0x10000>;
 				read-only;
 
 				macaddr_factory_fff0: macaddr@fff0 {
 					reg = <0xfff0 0x6>;
 				};
-				// todo:
-				// macaddr_factory_fff6: macaddr@fff6 {
-				// 	reg = <0xfff6 0x6>;
-				// };
+				macaddr_factory_fff6: macaddr@fff6 {
+					reg = <0xfff6 0x6>;
+				};
 			};
 
 			partition@50000 {
@@ -83,8 +82,8 @@
 					reg = <0x0 0x440000>;
 				};
 
-				ubiconcat0: partition@440000 {
-					label = "ubiconcat0";
+				ubi: partition@440000 {
+					label = "ubi";
 					reg = <0x440000 0x1B20000>;
 				};
 			};
@@ -116,7 +115,7 @@
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
-		mediatek,mtd-eeprom = <&factory 0x0>;
+		mediatek,mtd-eeprom = <&factory 0x8000>;
 	};
 };
 
@@ -124,27 +123,21 @@
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
-		mediatek,mtd-eeprom = <&factory 0x8000>;
+		ieee80211-freq-limit = <5000000 6000000>;
+		mediatek,mtd-eeprom = <&factory 0x0000>;
+		mediatek,disable-radar-background;
 	};
 };
 
 &gmac0 {
 	nvmem-cells = <&macaddr_factory_fff0>;
 	nvmem-cell-names = "mac-address";
-};
-
-&switch0 {
-	ports {
-		port@1 {
-			status = "okay";
-			label = "swp1";
-		};
-	};
+	mac-address-increment = <1>;
 };
 
 &gmac1 {
 	status = "okay";
-	label = "swp0";
+	label = "lan";
 	phy-handle = <&ethphy0>;
 
 	nvmem-cells = <&macaddr_factory_fff0>;

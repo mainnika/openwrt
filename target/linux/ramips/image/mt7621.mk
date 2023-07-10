@@ -240,7 +240,7 @@ define Device/arcadyan_wifi-versterker
   $(Device/uimage-lzma-loader)
   DEVICE_VENDOR := Arcadyan
   DEVICE_MODEL := WiFi-Versterker
-  IMAGE_SIZE := 16064k
+  IMAGE_SIZE := 27776k
   KERNEL_SIZE := 4352k
   UBINIZE_OPTS := -E 5
   PAGESIZE := 1
@@ -252,7 +252,7 @@ define Device/arcadyan_wifi-versterker
 	uImage none
   IMAGES += factory.trx
   IMAGE/factory.trx := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | check-size
-  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  IMAGE/sysupgrade.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | check-size | append-metadata
   DEVICE_PACKAGES := kmod-mt7615-firmware -uboot-envtools
 endef
 TARGET_DEVICES += arcadyan_wifi-versterker

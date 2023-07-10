@@ -8,11 +8,11 @@ ramips_setup_interfaces()
 	local board="$1"
 
 	case $board in
-	arcadyan,we420223-99|\
-	arcadyan,wifi-versterker)
+	arcadyan,we420223-99)
 		ucidef_set_interface_lan "swp0 swp1"
 		;;
 	ampedwireless,ally-00x19k|\
+	arcadyan,wifi-versterker|\
 	asus,rp-ac56|\
 	asus,rp-ac87|\
 	dlink,dap-1620-b1|\
