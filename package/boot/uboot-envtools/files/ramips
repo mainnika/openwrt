@@ -25,12 +25,6 @@ sitecom,wlr-4100-v1-002|\
 zyxel,keenetic-lite-iii-a)
 	ubootenv_add_uci_config "/dev/mtd1" "0x0" "0x1000" "0x1000"
 	;;
-arcadyan,we420223-99)
-	ubootenv_add_uci_config "/dev/mtd2" "0x0" "0x1000" "0x1000"
-	;;
-arcadyan,wifi-versterker)
-	ubootenv_add_uci_config "/dev/mtd2" "0x0" "0x1000" "0x1000"
-	;;
 alfa-network,ax1800rm|\
 allnet,all0256n-4m|\
 allnet,all0256n-8m|\
@@ -39,6 +33,7 @@ yuncore,ax820)
 	ubootenv_add_uci_config "/dev/mtd1" "0x0" "0x10000" "0x10000"
 	;;
 arcadyan,we420223-99|\
+arcadyan,wifi-versterker|\
 dlink,dir-806a-b1)
 	ubootenv_add_uci_config "/dev/mtd2" "0x0" "0x1000" "0x1000"
 	;;
